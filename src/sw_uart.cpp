@@ -16,7 +16,7 @@ namespace sw_comm {
  */
 void uart_tx::_run(void* args)
 {
-    uart_tx* _this = (uart_tx*)args;
+    uart_tx* _this = static_cast<uart_tx*>(args);
 
     bool fresh = false;
     printf("UART TX task started!\n");
@@ -109,7 +109,7 @@ void uart_tx::_run(void* args)
  */
 void uart_tx::_handler(nrf_timer_event_t event_type, void* p_context)
 {
-    uart_tx* _this = (uart_tx*)p_context;
+    uart_tx* _this = static_cast<uart_tx*>(p_context);
 
     switch (event_type) {
         case NRF_TIMER_EVENT_COMPARE0:
@@ -172,7 +172,7 @@ uart_tx::uart_tx(const uint32_t& tx_pin, const uint32_t& timer) : _pin(tx_pin)
     int rc = xTaskCreate(uart_tx::_run, "uart_tx", 1024u, this, 1u, &_task_handle);
     configASSERT(rc == pdTRUE);
 
-    printf("NRFX Software UART TX inited at pin %d\n", _pin);
+    printf("NRFX Software UART TX inited at pin %u\n", _pin);
 }
 
 } // namespace sw_comm
